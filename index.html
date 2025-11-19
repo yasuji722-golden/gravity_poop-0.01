@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravity Poop</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Gravity Poop</h1>
+        </header>
+
+        <main>
+            <section class="game-area">
+                <div class="stats">
+                    <div class="stat-box">
+                        <span id="poop-count">0</span> Poops
+                    </div>
+                    <div class="stat-box small">
+                        <span id="pps-count">0</span> Poops/sec
+                    </div>
+                    <div class="stat-box small gold-essence-box">
+                        <span id="gold-essence-count">0</span> Gold Essence
+                    </div>
+                    <div class="prestige-container">
+                        <button id="prestige-button" class="hidden" disabled>Prestige</button>
+                    </div>
+                </div>
+
+                <div class="click-zone">
+                    <button id="poop-button">
+                        <img src="poop_icon.png" alt="Poop">
+                    </button>
+                </div>
+            </section>
+
+            <section class="store-area">
+                <h2>Store</h2>
+                <div id="store">
+                    <!-- Items will be injected here by JS -->
+                </div>
+            </section>
+        </main>
+
+        <div id="golden-poop-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
