@@ -48,6 +48,22 @@ let gameState = {
             pps: 100,
             count: 0,
             icon: 'portal_icon.png'
+        },
+        solar_generator: {
+            id: 'solar_generator',
+            name: 'Solar Poop Generator',
+            baseCost: 100000,
+            pps: 1000,
+            count: 0,
+            icon: 'solar_generator_icon.png'
+        },
+        cosmic_temple: {
+            id: 'cosmic_temple',
+            name: 'Cosmic Poop Temple',
+            baseCost: 1000000,
+            pps: 10000,
+            count: 0,
+            icon: 'cosmic_temple_icon.png'
         }
     },
     modifiers: {
@@ -148,17 +164,17 @@ function recalculatePpS() {
 
 // Prestige System
 function checkPrestigeCondition() {
+    els.prestigeButton.classList.remove('hidden'); // Always show
+
     if (gameState.totalPoopProduced >= CONFIG.prestigeThreshold) {
-        els.prestigeButton.classList.remove('hidden');
         els.prestigeButton.disabled = false;
+        els.prestigeButton.textContent = "Prestige Available!";
+        els.prestigeButton.title = "Reset for Gold Essence";
     } else {
-        // Keep it visible if unlocked once? Or hide? 
-        // Requirement says "active when total > 1M". Let's hide if not met initially, show when met.
-        // If already prestiged, maybe keep it visible but disabled until next threshold?
-        // For simplicity based on prompt: "Active when ... > 1,000,000".
-        if (gameState.totalPoopProduced < CONFIG.prestigeThreshold) {
-            els.prestigeButton.classList.add('hidden');
-        }
+        els.prestigeButton.disabled = true;
+        const percent = Math.floor((gameState.totalPoopProduced / CONFIG.prestigeThreshold) * 100);
+        els.prestigeButton.textContent = `Prestige: ${percent}%`;
+        els.prestigeButton.title = `Unlock at ${formatNumber(CONFIG.prestigeThreshold)} Total Poops`;
     }
 }
 
