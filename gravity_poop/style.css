@@ -1,0 +1,291 @@
+:root {
+    --bg-color: #e0f7fa;
+    --primary-color: #795548; /* Brown */
+    --accent-color: #ffeb3b; /* Yellow/Gold */
+    --text-color: #37474f;
+    --card-bg: #ffffff;
+    --btn-hover: #8d6e63;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden; /* Prevent scrolling on main body, handle inside sections */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+header {
+    text-align: center;
+    padding: 10px 0;
+}
+
+h1 {
+    font-family: 'Fredoka One', cursive;
+    color: var(--primary-color);
+    font-size: 3rem;
+    text-shadow: 2px 2px 0px #fff;
+}
+
+main {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+    overflow: hidden;
+}
+
+/* Game Area (Left) */
+.game-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.stats {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.stat-box {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+.stat-box.small {
+    font-size: 1.2rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.click-zone {
+    position: relative;
+}
+
+#poop-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#poop-button:active {
+    transform: scale(0.9);
+}
+
+#poop-button img {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+}
+
+/* Floating Numbers */
+.floating-number {
+    position: absolute;
+    font-family: 'Fredoka One', cursive;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    pointer-events: none;
+    animation: floatUp 1s ease-out forwards;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
+}
+
+/* Store Area (Right) */
+.store-area {
+    flex: 1;
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.store-area h2 {
+    font-family: 'Fredoka One', cursive;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#store {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Scrollbar styling */
+#store::-webkit-scrollbar {
+    width: 8px;
+}
+#store::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 4px;
+}
+#store::-webkit-scrollbar-thumb {
+    background: #ccc; 
+    border-radius: 4px;
+}
+#store::-webkit-scrollbar-thumb:hover {
+    background: #aaa; 
+}
+
+.store-item {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.store-item:hover {
+    background: #fff;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.store-item.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+}
+
+.item-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    background: #fff;
+    border-radius: 50%;
+    padding: 5px;
+    border: 1px solid #eee;
+}
+
+.item-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.item-cost {
+    color: #e91e63; /* Pinkish red for cost */
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.item-pps {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.item-count {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: #ccc;
+    margin-left: 10px;
+}
+
+/* Golden Poop */
+#golden-poop-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.golden-poop {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    pointer-events: auto;
+    animation: shimmer 1s infinite alternate, fade 10s linear forwards;
+    z-index: 101;
+}
+
+.golden-poop img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px gold);
+}
+
+@keyframes shimmer {
+    0% { transform: scale(1); filter: drop-shadow(0 0 5px gold); }
+    100% { transform: scale(1.1); filter: drop-shadow(0 0 15px gold); }
+}
+
+@keyframes fade {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+    
+    .game-area {
+        flex: none;
+    }
+    
+    #poop-button img {
+        width: 180px;
+        height: 180px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
