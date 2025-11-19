@@ -1,10 +1,13 @@
 :root {
     --bg-color: #e0f7fa;
-    --primary-color: #795548; /* Brown */
-    --accent-color: #ffeb3b; /* Yellow/Gold */
+    --primary-color: #795548;
+    /* Brown */
+    --accent-color: #ffeb3b;
+    /* Yellow/Gold */
     --text-color: #37474f;
     --card-bg: #ffffff;
     --btn-hover: #8d6e63;
+    --gold-color: #ffd700;
 }
 
 * {
@@ -18,7 +21,8 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     height: 100vh;
-    overflow: hidden; /* Prevent scrolling on main body, handle inside sections */
+    overflow: hidden;
+    /* Prevent scrolling on main body, handle inside sections */
 }
 
 .container {
@@ -59,7 +63,7 @@ main {
     background: rgba(255, 255, 255, 0.5);
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .stats {
@@ -77,6 +81,48 @@ main {
     font-size: 1.2rem;
     color: #666;
     margin-top: 5px;
+}
+
+.gold-essence-box {
+    color: #fbc02d;
+    /* Darker gold for text */
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.prestige-container {
+    margin-top: 10px;
+    height: 40px;
+    /* Reserve space */
+}
+
+#prestige-button {
+    background: linear-gradient(45deg, #ffd700, #ffca28);
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-family: 'Fredoka One', cursive;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#prestige-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.6);
+}
+
+#prestige-button.hidden {
+    display: none;
+}
+
+#prestige-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(100%);
 }
 
 .click-zone {
@@ -100,7 +146,7 @@ main {
     width: 250px;
     height: 250px;
     object-fit: contain;
-    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2));
 }
 
 /* Floating Numbers */
@@ -111,11 +157,31 @@ main {
     font-size: 1.5rem;
     pointer-events: none;
     animation: floatUp 1s ease-out forwards;
+    z-index: 10;
 }
 
 @keyframes floatUp {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-50px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Particles */
+.poop-particle {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background-image: url('poop_icon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1000;
 }
 
 /* Store Area (Right) */
@@ -124,7 +190,7 @@ main {
     background: var(--card-bg);
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -147,16 +213,19 @@ main {
 #store::-webkit-scrollbar {
     width: 8px;
 }
+
 #store::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
     border-radius: 4px;
 }
+
 #store::-webkit-scrollbar-thumb {
-    background: #ccc; 
+    background: #ccc;
     border-radius: 4px;
 }
+
 #store::-webkit-scrollbar-thumb:hover {
-    background: #aaa; 
+    background: #aaa;
 }
 
 .store-item {
@@ -176,7 +245,7 @@ main {
     background: #fff;
     border-color: var(--primary-color);
     transform: translateY(-2px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .store-item.disabled {
@@ -212,7 +281,8 @@ main {
 }
 
 .item-cost {
-    color: #e91e63; /* Pinkish red for cost */
+    color: #e91e63;
+    /* Pinkish red for cost */
     font-weight: bold;
     font-size: 0.9rem;
 }
@@ -247,27 +317,80 @@ main {
     height: 80px;
     cursor: pointer;
     pointer-events: auto;
-    animation: shimmer 1s infinite alternate, fade 10s linear forwards;
+    animation: shimmer 0.8s infinite alternate, fade 10s linear forwards, floatAround 3s ease-in-out infinite;
     z-index: 101;
+}
+
+.golden-poop::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 223, 0, 0.6) 0%, rgba(255, 215, 0, 0) 70%);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    animation: rotateGlow 3s linear infinite;
 }
 
 .golden-poop img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 0 10px gold);
+    filter: drop-shadow(0 0 15px gold);
 }
 
 @keyframes shimmer {
-    0% { transform: scale(1); filter: drop-shadow(0 0 5px gold); }
-    100% { transform: scale(1.1); filter: drop-shadow(0 0 15px gold); }
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 10px gold);
+    }
+
+    100% {
+        transform: scale(1.15);
+        filter: drop-shadow(0 0 30px gold);
+    }
+}
+
+@keyframes rotateGlow {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes floatAround {
+
+    0%,
+    100% {
+        margin-top: 0;
+    }
+
+    50% {
+        margin-top: -20px;
+    }
 }
 
 @keyframes fade {
-    0% { opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 /* Responsive */
@@ -275,16 +398,16 @@ main {
     main {
         flex-direction: column;
     }
-    
+
     .game-area {
         flex: none;
     }
-    
+
     #poop-button img {
         width: 180px;
         height: 180px;
     }
-    
+
     h1 {
         font-size: 2rem;
     }
