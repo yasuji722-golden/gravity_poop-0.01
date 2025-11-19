@@ -515,20 +515,50 @@ main {
 
 /* Responsive */
 @media (max-width: 768px) {
+    body {
+        overflow: hidden;
+        /* Keep body non-scrollable */
+    }
+
     main {
         flex-direction: column;
+        padding-bottom: 10px;
     }
 
     .game-area {
-        flex: none;
+        flex: 0 0 auto;
+        /* Don't grow or shrink */
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .store-area,
+    .achievements-area {
+        flex: 1;
+        /* Share remaining space */
+        min-height: 0;
+        /* Allow shrinking below content size */
+        max-height: 35vh;
+        /* Cap height as requested */
+        margin-bottom: 10px;
     }
 
     #poop-button img {
-        width: 180px;
-        height: 180px;
+        width: 150px;
+        /* Smaller poop for mobile */
+        height: 150px;
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+    }
+
+    .stat-box {
+        font-size: 1.8rem;
+    }
+
+    .stat-box.small {
+        font-size: 1rem;
     }
 }
