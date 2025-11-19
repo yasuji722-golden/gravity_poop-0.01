@@ -10,11 +10,40 @@ const CONFIG = {
     goldEssenceBonus: 0.1, // 10% per essence
 };
 
+// Achievement Data
+const ACHIEVEMENTS = [
+    {
+        id: 'ACH01',
+        title: 'First Click!',
+        description: 'Click the poop for the first time.',
+        condition: (state) => state.clickCount >= 1
+    },
+    {
+        id: 'ACH02',
+        title: 'Toilet Master',
+        description: 'Own 50 Toilets.',
+        condition: (state) => state.items.toilet.count >= 50
+    },
+    {
+        id: 'ACH03',
+        title: 'Tycoon',
+        description: 'Generate 1,000,000 total poop.',
+        condition: (state) => state.totalPoopProduced >= 1000000
+    },
+    {
+        id: 'ACH04',
+        title: 'Time Traveler',
+        description: 'Perform a Prestige reset.',
+        condition: (state) => state.goldEssence >= 1
+    }
+];
+
 // Game State
 let gameState = {
     poopCount: 0,
-    totalPoopProduced: 0, // Track for prestige
-    goldEssence: 0, // Prestige currency
+    totalPoopProduced: 0,
+    clickCount: 0, // Track manual clicks
+    goldEssence: 0,
     pps: 0,
     items: {
         toilet: {
@@ -68,7 +97,8 @@ let gameState = {
     },
     modifiers: {
         globalMultiplier: 1
-    }
+    },
+    unlockedAchievements: [] // Store IDs of unlocked achievements
 };
 
 // DOM Elements
@@ -78,14 +108,17 @@ const els = {
     goldEssenceCount: document.getElementById('gold-essence-count'),
     poopButton: document.getElementById('poop-button'),
     store: document.getElementById('store'),
+    achievementsList: document.getElementById('achievements-list'),
     goldenPoopContainer: document.getElementById('golden-poop-container'),
-    prestigeButton: document.getElementById('prestige-button')
+    prestigeButton: document.getElementById('prestige-button'),
+    notificationContainer: document.getElementById('notification-container')
 };
 
 // Initialization
 function init() {
     loadGame();
     renderStore();
+    renderAchievements();
     updateUI();
 
     // Event Listeners
@@ -93,18 +126,22 @@ function init() {
     els.prestigeButton.addEventListener('click', doPrestige);
 
     // Passive Income Loop
-    setInterval(passiveIncome, 100); // Run 10 times a second
+    setInterval(passiveIncome, 100);
 
     // Auto Save
     setInterval(saveGame, CONFIG.autoSaveInterval);
 
     // Golden Poop Spawner
     setInterval(trySpawnGoldenPoop, 1000);
+
+    // Achievement Check Loop
+    setInterval(checkAchievements, 1000);
 }
 
 // Core Mechanics
 function clickPoop(e) {
     const amount = 1 * getGlobalMultiplier();
+    gameState.clickCount++; // Increment click count
     addPoop(amount);
 
     // Visual feedback
@@ -131,7 +168,6 @@ function passiveIncome() {
 }
 
 function getGlobalMultiplier() {
-    // Base multiplier * Golden Poop Multiplier * (1 + Gold Essence Bonus)
     const essenceBonus = 1 + (gameState.goldEssence * CONFIG.goldEssenceBonus);
     return gameState.modifiers.globalMultiplier * essenceBonus;
 }
@@ -149,7 +185,7 @@ function buyItem(itemId) {
         item.count++;
         recalculatePpS();
         updateUI();
-        renderStore(); // Re-render to update costs and visual states
+        renderStore();
         saveGame();
     }
 }
@@ -164,7 +200,7 @@ function recalculatePpS() {
 
 // Prestige System
 function checkPrestigeCondition() {
-    els.prestigeButton.classList.remove('hidden'); // Always show
+    els.prestigeButton.classList.remove('hidden');
 
     if (gameState.totalPoopProduced >= CONFIG.prestigeThreshold) {
         els.prestigeButton.disabled = false;
@@ -180,28 +216,74 @@ function checkPrestigeCondition() {
 
 function doPrestige() {
     if (confirm("Are you sure you want to PRESTIGE? You will lose all progress but gain 1 Gold Essence (+10% permanent bonus).")) {
-        // 1. Add Gold Essence
         gameState.goldEssence += 1;
 
-        // 2. Reset Game State (except Essence)
         gameState.poopCount = 0;
         gameState.totalPoopProduced = 0;
+        gameState.clickCount = 0; // Optional: reset click count? Let's keep it for stats if needed, but reset for gameplay feel? Usually prestige resets run stats. Let's reset it.
         gameState.pps = 0;
-        gameState.modifiers.globalMultiplier = 1; // Reset golden poop bonus if active
+        gameState.modifiers.globalMultiplier = 1;
 
-        // Reset Items
         for (const key in gameState.items) {
             gameState.items[key].count = 0;
         }
 
-        // 3. Save and Reload
         saveGame();
         renderStore();
         updateUI();
-        checkPrestigeCondition(); // Will hide button
+        checkPrestigeCondition();
 
         alert("PRESTIGE SUCCESSFUL! You now have " + gameState.goldEssence + " Gold Essence.");
     }
+}
+
+// Achievement System
+function checkAchievements() {
+    ACHIEVEMENTS.forEach(ach => {
+        if (!gameState.unlockedAchievements.includes(ach.id)) {
+            if (ach.condition(gameState)) {
+                unlockAchievement(ach);
+            }
+        }
+    });
+}
+
+function unlockAchievement(achievement) {
+    gameState.unlockedAchievements.push(achievement.id);
+    showNotification(achievement.title);
+    renderAchievements(); // Update UI to show unlocked state
+    saveGame();
+}
+
+function showNotification(title) {
+    const notif = document.createElement('div');
+    notif.className = 'notification';
+    notif.innerHTML = `
+        <h4>Achievement Unlocked!</h4>
+        <p>${title}</p>
+    `;
+    els.notificationContainer.appendChild(notif);
+
+    // Remove after 5 seconds
+    setTimeout(() => {
+        notif.style.opacity = '0';
+        notif.style.transform = 'translateX(100%)';
+        setTimeout(() => notif.remove(), 500);
+    }, 5000);
+}
+
+function renderAchievements() {
+    els.achievementsList.innerHTML = '';
+    ACHIEVEMENTS.forEach(ach => {
+        const isUnlocked = gameState.unlockedAchievements.includes(ach.id);
+        const el = document.createElement('div');
+        el.className = `achievement-item ${isUnlocked ? 'unlocked' : ''}`;
+        el.innerHTML = `
+            <div class="achievement-title">${ach.title} ${isUnlocked ? '✅' : '🔒'}</div>
+            <div class="achievement-desc">${ach.description}</div>
+        `;
+        els.achievementsList.appendChild(el);
+    });
 }
 
 // Golden Poop Logic
@@ -326,7 +408,6 @@ function createParticles(x, y) {
         p.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
         document.body.appendChild(p);
 
-        // Trigger animation next frame
         requestAnimationFrame(() => {
             p.style.transform = `translate(${tx}px, ${ty}px)`;
             p.style.opacity = '0';
@@ -345,7 +426,9 @@ function saveGame() {
     const saveData = {
         poopCount: gameState.poopCount,
         totalPoopProduced: gameState.totalPoopProduced,
+        clickCount: gameState.clickCount,
         goldEssence: gameState.goldEssence,
+        unlockedAchievements: gameState.unlockedAchievements,
         items: {}
     };
 
@@ -363,13 +446,14 @@ function loadGame() {
             const data = JSON.parse(saved);
             gameState.poopCount = data.poopCount || 0;
             gameState.totalPoopProduced = data.totalPoopProduced || 0;
+            gameState.clickCount = data.clickCount || 0;
 
-            // Migration for old saves or if total is less than current (sanity check)
             if (gameState.totalPoopProduced < gameState.poopCount) {
                 gameState.totalPoopProduced = gameState.poopCount;
             }
 
             gameState.goldEssence = data.goldEssence || 0;
+            gameState.unlockedAchievements = data.unlockedAchievements || [];
 
             if (data.items) {
                 for (const key in data.items) {
